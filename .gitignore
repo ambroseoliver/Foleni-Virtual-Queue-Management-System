@@ -1,0 +1,27 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and generated assets
+/vendor/
+/node_modules/
+/dist/
+/build/
+
+# Runtime files
+*.log
+/logs/
+/cache/
+/tmp/
+
+# Database exports and local backups (keep database/foleni.sql tracked)
+*.sql.gz
+*.dump
+*.bak
+*.backup
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.idea/
