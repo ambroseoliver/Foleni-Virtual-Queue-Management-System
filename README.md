@@ -1,85 +1,136 @@
-# Foleni
+<div align="center">
 
-Foleni is a lightweight virtual queue for a barbershop. Customers can choose a service and join the queue online, check the live line, and see their place. Staff can sign in to manage the queue.
+# FOLENI
 
-## Features
+### A better way to wait.
 
-- Responsive landing page with services, prices, and estimated wait.
-- Customer queue form with server-side validation and CSRF protection.
-- Live queue page that refreshes every 30 seconds and displays a customer's ticket.
-- Password-protected business dashboard for advancing the queue.
-- MySQL persistence using PDO and prepared statements.
+Join the barbershop queue from anywhere, follow your place in real time, and arrive when it is nearly your turn.
 
-## Requirements
+<p>
+  <a href="#-what-you-can-do">Explore features</a> ·
+  <a href="#-get-started">Get started</a> ·
+  <a href="#-screenshots">See the app</a>
+</p>
+
+<img src="docs/screenshots/home.png" alt="Foleni home page showing the barbershop queue experience" width="800">
+
+<br>
+
+**PHP 8+** &nbsp;·&nbsp; **MySQL / MariaDB** &nbsp;·&nbsp; **Responsive by design**
+
+</div>
+
+---
+
+## ✨ What you can do
+
+| For customers | For the shop |
+| --- | --- |
+| Browse services, prices, and estimated durations | Sign in to a protected business dashboard |
+| Join the queue online with a name and service | See who is waiting and who is being served |
+| Get a personal ticket and check your place in line | Advance the queue as each appointment is completed |
+| Follow the live queue, refreshed every 30 seconds | Keep queue entries in a MySQL database |
+
+## 🖼️ Screenshots
+
+<table>
+  <tr>
+    <td align="center"><strong>Home</strong><br><img src="docs/screenshots/home.png" alt="Foleni home page" width="420"></td>
+    <td align="center"><strong>Join the queue</strong><br><img src="docs/screenshots/join-queue.png" alt="Customer service selection and queue form" width="420"></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Live queue</strong><br><img src="docs/screenshots/live-queue.png" alt="Live queue and customer positions" width="420"></td>
+    <td align="center"><strong>Business login</strong><br><img src="docs/screenshots/business-login.png" alt="Business sign-in page" width="420"></td>
+  </tr>
+</table>
+
+## 🚀 Get started
+
+### Requirements
 
 - PHP 8.0 or later
 - MySQL or MariaDB
 - PHP PDO MySQL extension
 
-## Setup
+### 1. Create the database
 
-1. Create a database and a dedicated database user. For example, in MySQL:
+The schema in `database/foleni.sql` selects a database named `foleni_db`. Create that database and a dedicated user with the permissions the app needs:
 
-   ```sql
-   CREATE DATABASE foleni_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   CREATE USER 'foleni_user'@'localhost' IDENTIFIED BY 'replace-with-a-strong-password';
-   GRANT SELECT, INSERT, UPDATE ON foleni_db.* TO 'foleni_user'@'localhost';
-   ```
-
-2. Import the queue table:
-
-   ```sh
-   mysql -u foleni_user -p foleni_db < database/foleni.sql
-   ```
-
-3. Configure the database connection in [`config/database.php`](config/database.php) with the database host, name, username, and password you created. Do not commit real credentials.
-
-4. Configure business login credentials in the environment where PHP runs:
-
-   ```sh
-   export FOLENI_ADMIN_USER='your-admin-name'
-   export FOLENI_ADMIN_PASSWORD='use-a-strong-unique-password'
-   ```
-
-5. Start the PHP development server from the project directory:
-
-   ```sh
-   php -S 127.0.0.1:8000
-   ```
-
-   Open <http://127.0.0.1:8000/> in your browser. The environment variables must be available to the PHP server process.
-
-## Pages
-
-| Page | URL | Purpose |
-| --- | --- | --- |
-| Home | `/` | Service overview and links to the queue |
-| Join queue | `/join_queue.php` | Select a service and join the line |
-| Live queue | `/queue_status.php` | View the current line; ticket links include `?id=<queue-entry-id>` |
-| Business login | `/login.php` | Sign in with the configured admin credentials |
-| Owner dashboard | `/admin.php` | View active customers and advance the queue |
-
-## Project structure
-
-```text
-admin.php                 Owner dashboard
-assets/css/style.css      Responsive site styles
-assets/js/script.js       Mobile navigation behavior
-config/database.php       PDO database connection
-database/foleni.sql       Queue table schema
-includes/functions.php    Shared queue, escaping, and session helpers
-includes/header.php       Shared site header
-includes/footer.php       Shared site footer
-index.php                 Landing page
-join_queue.php            Customer queue form
-login.php                 Business login
-logout.php                Sign-out handler
-queue_status.php          Live queue and ticket view
+```sql
+CREATE DATABASE foleni_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'foleni_user'@'localhost' IDENTIFIED BY 'replace-with-a-strong-password';
+GRANT SELECT, INSERT, UPDATE ON foleni_db.* TO 'foleni_user'@'localhost';
 ```
 
-## Notes
+Import the schema:
 
-- The database setup script creates the `queue_entries` table in the `foleni_db` database.
-- The dashboard is inaccessible until `FOLENI_ADMIN_USER` and `FOLENI_ADMIN_PASSWORD` are configured.
-- The landing page uses Google Fonts and a remote Unsplash photo; those assets require an internet connection.
-- For production, use HTTPS, set a strong unique admin password, and configure PHP environment variables and database credentials through your hosting provider's secret-management settings.
+```sh
+mysql -u foleni_user -p foleni_db < database/foleni.sql
+```
+
+### 2. Configure the database connection
+
+Edit `config/database.php` and set `$host`, `$dbname`, `$username`, and `$password` to match your database. Keep real credentials out of version control.
+
+### 3. Configure business login
+
+Set both environment variables in the environment that runs PHP:
+
+```sh
+export FOLENI_ADMIN_USER='your-admin-name'
+export FOLENI_ADMIN_PASSWORD='use-a-strong-unique-password'
+```
+
+### 4. Run locally
+
+From the project directory, start PHP's built-in development server:
+
+```sh
+php -S 127.0.0.1:8000
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Make sure the database is running and the environment variables are available to the PHP server process.
+
+## 🧭 Pages
+
+| Page | Path | What it does |
+| --- | --- | --- |
+| Home | `/` | Browse the shop, services, and queue overview |
+| Join queue | `/join_queue.php` | Choose a service and add your name |
+| Live queue | `/queue_status.php` | Follow the line; ticket links use `?id=<queue-entry-id>` |
+| Business login | `/login.php` | Sign in with the configured business credentials |
+| Owner dashboard | `/admin.php` | View the active queue and advance service |
+
+## 🗂️ Project layout
+
+```text
+.
+├── admin.php                  # Business dashboard
+├── index.php                  # Landing page
+├── join_queue.php             # Customer queue form
+├── login.php                  # Business sign-in
+├── logout.php                 # Sign out
+├── queue_status.php           # Live queue and ticket view
+├── assets/
+│   ├── css/style.css          # Responsive styles
+│   └── js/script.js           # Mobile navigation
+├── config/database.php        # PDO database connection
+├── database/foleni.sql        # Queue table schema
+└── includes/
+    ├── functions.php          # Shared queue, escaping, and session helpers
+    ├── header.php             # Shared site header
+    └── footer.php             # Shared site footer
+```
+
+## 🔐 Production notes
+
+- Use HTTPS and a strong, unique business password.
+- Configure database credentials and login environment variables through your hosting provider's secret-management settings.
+- Use a production-ready PHP web server rather than PHP's built-in development server.
+- Google Fonts and the landing-page photo are loaded remotely, so those assets require an internet connection.
+
+---
+
+<div align="center">
+Made for less waiting and better days.
+</div>
